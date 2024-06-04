@@ -31,6 +31,9 @@ function generateItemElement(item){
     element.querySelector('.result-reviews').innerHTML = item.reviewCount > 0
         ? `${item.stars}/5 (${item.reviewCount} user reviews)`
         : '(no user reviews)';
+    element.querySelector('.result-price').innerHTML = item.price
+        ? `$${item.price}`
+        : 'No available price.';
     return element;
 }
 

@@ -44,7 +44,12 @@ function decomposeItem(item){
     //Find the image element based on a unique class named s-image and get its source.
     const imageUrl = item.querySelector('.s-image').src;
 
-    return { title, stars, reviewCount, imageUrl };
+    //Find and join the two price elements, considering items with no available price.
+    const priceWhole = item.querySelector('.a-price-whole')?.innerHTML;
+    const priceFraction = item.querySelector('.a-price-fraction')?.innerHTML;
+    const price = (priceWhole && priceFraction) ? `${priceWhole}${priceFraction}` : null;
+
+    return { title, stars, reviewCount, imageUrl, price};
 }
 
 export async function getProducts(req, res){
