@@ -10,6 +10,13 @@ const resultContainer = document.querySelector('#result-container');
 const resultItemPrefab =  document.querySelector('.result-item');
 resultItemPrefab.remove();
 
+//For better user interaction, also trigger the scraping process when the user presses the Enter key.
+inputElement.addEventListener('keypress', event => {
+    if (event.key === 'Enter'){
+        onSubmitSearch();
+    }
+})
+
 /**
  * @param item An object in the format:
  * { title, stars, reviewCount, imageUrl }
