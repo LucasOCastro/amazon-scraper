@@ -15,11 +15,6 @@ function extractStarCount(starElement){
 }
 
 function decomposeItem(item){
-    if (!item
-        .querySelector('.s-title-instructions-style')){
-        console.log(item.innerHTML);
-    }
-
     //Find the title based on a unique class named s-title-instructions-style
     // and then get the descendant with the actual text.
     const title = item
@@ -69,8 +64,13 @@ export async function getProducts(req, res){
 
         //Parse and return the result.
         const parsedResults = Array.from(results).map(decomposeItem);
-        return res.status(200).send(parsedResults);
+        return res.status(200).json(parsedResults);
     } catch (err) {
+        if (err.status === 503){
+            console.log('No more requests available.');
+            return res.status(503).send('You reached the limit of amazon fetch requests.');
+        }
+
         console.error('Unhandled error when fetching amazon search.', err);
         return res.status(500).send('Server error.');
     }
