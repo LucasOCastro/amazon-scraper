@@ -42,17 +42,26 @@ function onSubmitSearch(){
     const keyword = inputElement.value;
     const scrapeUrl = `http://localhost:${backendPort}/api/scrape/?keyword=${keyword}`;
     fetch(scrapeUrl).then(async res => {
+        if (!res.ok){
+            throw {status: res.status};
+        }
         const json = await res.json();
         const resultElements = json.map(item => generateItemElement(item));
         //Replace children after slight interval to make sure the nodes updated.
         requestAnimationFrame(() => resultContainer.replaceChildren(...resultElements));
     }).catch(err => {
-        if (err.status === 503){
-            resultContainer.innerHTML = 'You ran out of available fetches. Please try again later!';
-            return;
+        switch (err.status){
+            case 503:
+                resultContainer.innerHTML = 'You ran out of available fetches. Please try again later!';
+                break;
+            case 400:
+                resultContainer.innerHTML = 'Invalid keyword.';
+                break;
+            default:
+                console.error('Unhandled error when fetching.', err);
+                resultContainer.innerHTML = 'Server error when fetching amazon data. Sorry!';
+                break;
         }
-        console.error('Unhandled error when fetching.', err);
-        resultContainer.innerHTML = 'Server error when fetching amazon data. Sorry!';
     }).finally(() => {
         inputElement.disabled = false;
         searchButton.disabled = false;

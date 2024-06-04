@@ -49,9 +49,9 @@ function decomposeItem(item){
 
 export async function getProducts(req, res){
     //Extract and verify keyword from query.
-    const keyword = req.query.keyword;
+    const keyword = req.query.keyword?.replace(' ', '+');
     if (!keyword){
-        return res.status(400).send('Missing keyword.');
+        return res.status(400).send({error: 'Missing keyword.'});
     }
 
     try{
@@ -59,8 +59,7 @@ export async function getProducts(req, res){
         const response = await axios.get(`https://www.amazon.com/s?k=${keyword}`);
         const dom = new JSDOM(response.data);
 
-        //Scrape the actual html document by parsing all elements with the type attribute
-        // indicating a search result.
+        //Scrape the actual html document by querying all elements with the [data-component-type=s-search-result].
         const document = dom.window.document;
         const results = document
             .querySelectorAll('[data-component-type="s-search-result"]');
@@ -70,11 +69,11 @@ export async function getProducts(req, res){
         return res.status(200).json(parsedResults);
     } catch (err) {
         if (err.status === 503){
-            console.log('No more requests available.');
+            console.log({error: 'Missing keyword.'});
             return res.status(503).send('You reached the limit of amazon fetch requests.');
         }
 
         console.error(`Unhandled error when fetching amazon search for [${keyword}]`, err);
-        return res.status(500).send('Server error.');
+        return res.status(500).send({error: 'Missing keyword.'});
     }
 }
