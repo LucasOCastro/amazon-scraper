@@ -15,41 +15,30 @@ function extractStarCount(starElement){
 }
 
 function decomposeItem(item){
-    //Find the title based on a unique class named s-title-instructions-style
-    // and then get the descendant with the actual text.
-    const title = item
-        .querySelector('.s-title-instructions-style')
-        .querySelector('span .a-text-normal')
-        .firstChild.innerHTML;
+    //Find the title based on the data-cy attribute and then get the descendant with the actual text.
+    const title = item.querySelector('div[data-cy="title-recipe"] a span').innerHTML;
 
     //Find the star element based on a unique class named a-icon-star-small and then get the extract the actual
-    // numerical count. Some products have no reviews, so no star element.
+    // numerical count. Some products have no reviews, so return null.
     const starEl = item.querySelector('.a-icon-star-small');
     const stars = starEl ? extractStarCount(starEl) : null;
 
-    //Climb up the tree from the star element then get the sibling,
-    // as the review count is right after the star indicator.
-    // Then get the descendant with the actual text.
-    let reviewCount = 0;
-    if (starEl) {
-        reviewCount = starEl
-            .parentElement
-            .parentElement
-            .parentElement
-            .nextElementSibling
-            .querySelector('span .s-underline-text')
-            .firstChild.innerHTML;
-    }
-
-    //Find the image element based on a unique class named s-image and get its source.
-    const imageUrl = item.querySelector('.s-image').src;
+    //Find the review count element based on the data-csa-c-content-id attribute
+    // then get the descendant with the actual text. Some products have no reviews, so return 0.
+    const reviewCount = item
+        .querySelector('div[data-csa-c-content-id="alf-customer-ratings-count-component"] a span')
+        .innerHTML
+        ?? 0;
 
     //Find and join the two price elements, considering items with no available price.
     const priceWhole = item.querySelector('.a-price-whole')?.innerHTML;
     const priceFraction = item.querySelector('.a-price-fraction')?.innerHTML;
     const price = (priceWhole && priceFraction) ? `${priceWhole}${priceFraction}` : null;
 
-    return { title, stars, reviewCount, imageUrl, price};
+    //Find the image element based on the data-component-type attribute and get its source.
+    const imageUrl = item.querySelector('[data-component-type="s-product-image"] img').src;
+
+    return { title, stars, reviewCount, price, imageUrl };
 }
 
 export async function getProducts(req, res){
