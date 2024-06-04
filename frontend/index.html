@@ -2,13 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Amazon Scraper</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Header</h1>
+        <h1>Amazon Scraper</h1>
     </header>
+
+    <h3>Input the keyword you want to search.</h3>
+    <input id="keyword-input" type="text" aria-label="Input the keyword to search">
+    <button onclick="onSubmitSearch()">
+        Search
+    </button>
+
+    <div id="result-container">
+        <div class="result-item">
+            <h3 class="result-title">Title</h3>
+            <p class="result-reviews">5</p>
+            <img src="" alt="Result image" class="result-img">
+        </div>
+    </div>
+
+
     <script src="script.js"></script>
 </body>
 </html>

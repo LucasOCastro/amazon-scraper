@@ -25,7 +25,7 @@ function decomposeItem(item){
     //Find the star element based on a unique class named a-icon-star-small
     // and then get the extract the actual numerical count.
     const starEl = item.querySelector('.a-icon-star-small');
-    const starCount = extractStarCount(starEl);
+    const stars = extractStarCount(starEl);
 
     //Climb up the tree from the star element then get the sibling,
     // as the review count is right after the star indicator.
@@ -41,7 +41,7 @@ function decomposeItem(item){
     //Find the image element based on a unique class named s-image and get its source.
     const imageUrl = item.querySelector('.s-image').src;
 
-    return { title, starCount, reviewCount, imageUrl };
+    return { title, stars, reviewCount, imageUrl };
 }
 
 export async function getProducts(req, res){
