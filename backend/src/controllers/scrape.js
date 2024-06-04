@@ -22,21 +22,24 @@ function decomposeItem(item){
         .querySelector('span .a-text-normal')
         .firstChild.innerHTML;
 
-    //Find the star element based on a unique class named a-icon-star-small
-    // and then get the extract the actual numerical count.
+    //Find the star element based on a unique class named a-icon-star-small and then get the extract the actual
+    // numerical count. Some products have no reviews, so no star element.
     const starEl = item.querySelector('.a-icon-star-small');
-    const stars = extractStarCount(starEl);
+    const stars = starEl ? extractStarCount(starEl) : null;
 
     //Climb up the tree from the star element then get the sibling,
     // as the review count is right after the star indicator.
     // Then get the descendant with the actual text.
-    const reviewCount = starEl
-        .parentElement
-        .parentElement
-        .parentElement
-        .nextElementSibling
-        .querySelector('span .s-underline-text')
-        .firstChild.innerHTML;
+    let reviewCount = 0;
+    if (starEl) {
+        reviewCount = starEl
+            .parentElement
+            .parentElement
+            .parentElement
+            .nextElementSibling
+            .querySelector('span .s-underline-text')
+            .firstChild.innerHTML;
+    }
 
     //Find the image element based on a unique class named s-image and get its source.
     const imageUrl = item.querySelector('.s-image').src;
@@ -71,7 +74,7 @@ export async function getProducts(req, res){
             return res.status(503).send('You reached the limit of amazon fetch requests.');
         }
 
-        console.error('Unhandled error when fetching amazon search.', err);
+        console.error(`Unhandled error when fetching amazon search for [${keyword}]`, err);
         return res.status(500).send('Server error.');
     }
 }

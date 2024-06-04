@@ -19,7 +19,9 @@ function generateItemElement(item){
     const element = resultItemPrefab.cloneNode(true);
     element.querySelector('.result-title').innerHTML = item.title;
     element.querySelector('.result-img').src = item.imageUrl;
-    element.querySelector('.result-reviews').innerHTML = `${item.stars}/5 (${item.reviewCount} reviews)`;
+    element.querySelector('.result-reviews').innerHTML = item.reviewCount > 0
+        ? `${item.stars}/5 (${item.reviewCount} user reviews)`
+        : '(no user reviews)';
     return element;
 }
 
@@ -36,5 +38,6 @@ function onSubmitSearch(){
             return;
         }
         console.error('Unhandled error when fetching.', err);
+        resultContainer.innerHTML = 'Server error when fetching amazon data. Sorry!';
     });
 }
