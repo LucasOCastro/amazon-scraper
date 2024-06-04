@@ -4,13 +4,15 @@ const backendPort = 8080;
 
 //Query the relevant elements from the document.
 const inputElement = document.querySelector('#keyword-input');
+const searchButton = document.querySelector('#search-button');
 const resultContainer = document.querySelector('#result-container');
+
 //The result item is kept in the html as a blueprint for being cloned for each result.
 //Once we have it stored, we can remove the generic blueprint from the page.
 const resultItemPrefab =  document.querySelector('.result-item');
 resultItemPrefab.remove();
 
-//For better user interaction, also trigger the scraping process when the user presses the Enter key.
+//Register event to trigger the scraping process when the user presses the Enter key.
 inputElement.addEventListener('keypress', event => {
     if (event.key === 'Enter'){
         onSubmitSearch();
@@ -33,12 +35,17 @@ function generateItemElement(item){
 }
 
 function onSubmitSearch(){
+    resultContainer.innerHTML = 'Loading...';
+    inputElement.disabled = true;
+    searchButton.disabled = true;
+
     const keyword = inputElement.value;
     const scrapeUrl = `http://localhost:${backendPort}/api/scrape/?keyword=${keyword}`;
     fetch(scrapeUrl).then(async res => {
         const json = await res.json();
         const resultElements = json.map(item => generateItemElement(item));
-        resultContainer.replaceChildren(...resultElements);
+        //Replace children after slight interval to make sure the nodes updated.
+        requestAnimationFrame(() => resultContainer.replaceChildren(...resultElements));
     }).catch(err => {
         if (err.status === 503){
             resultContainer.innerHTML = 'You ran out of available fetches. Please try again later!';
@@ -46,5 +53,8 @@ function onSubmitSearch(){
         }
         console.error('Unhandled error when fetching.', err);
         resultContainer.innerHTML = 'Server error when fetching amazon data. Sorry!';
+    }).finally(() => {
+        inputElement.disabled = false;
+        searchButton.disabled = false;
     });
 }
