@@ -26,6 +26,7 @@ inputElement.addEventListener('keypress', event => {
  */
 function generateItemElement(item){
     const element = resultItemPrefab.cloneNode(true);
+    element.onclick = () => window.location = item.productUrl;
     element.querySelector('.result-title').innerHTML = item.title;
     element.querySelector('.result-img').src = item.imageUrl;
     element.querySelector('.result-reviews').innerHTML = item.reviewCount > 0

@@ -38,7 +38,11 @@ function decomposeItem(item){
     //Find the image element based on the data-component-type attribute and get its source.
     const imageUrl = item.querySelector('[data-component-type="s-product-image"] img').src;
 
-    return { title, stars, reviewCount, price, imageUrl };
+    //Find the title url and get its href.
+    const href = item.querySelector('div[data-cy="title-recipe"] a').href;
+    const productUrl = 'https://www.amazon.com/' + href;
+
+    return { title, stars, reviewCount, price, imageUrl, productUrl };
 }
 
 export async function getProducts(req, res){
