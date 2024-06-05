@@ -25,9 +25,8 @@ function decomposeItem(item){
 
     //Find the review count element based on the data-csa-c-content-id attribute
     // then get the descendant with the actual text. Some products have no reviews, so return 0.
-    const reviewCount = item
-        .querySelector('div[data-csa-c-content-id="alf-customer-ratings-count-component"] a span')
-        .innerHTML
+    const reviewCount =
+        item.querySelector('div[data-csa-c-content-id="alf-customer-ratings-count-component"] a span')?.innerHTML
         ?? 0;
 
     //Find and join the two price elements, considering items with no available price.

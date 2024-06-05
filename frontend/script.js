@@ -29,7 +29,7 @@ function generateItemElement(item){
     element.onclick = () => window.location = item.productUrl;
     element.querySelector('.result-title').innerHTML = item.title;
     element.querySelector('.result-img').src = item.imageUrl;
-    element.querySelector('.result-reviews').innerHTML = item.reviewCount > 0
+    element.querySelector('.result-reviews').innerHTML = item.stars !== null
         ? `${item.stars}/5 (${item.reviewCount} user reviews)`
         : '(no user reviews)';
     element.querySelector('.result-price').innerHTML = item.price
